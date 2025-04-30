@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAUL GOLDEN MARKET</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5D5CDE',
+            primaryDark: '#4b4ab0',
+            primaryLight: '#7e7de6',
+            darkBg: '#181818',
+            darkCard: '#252525',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 10px;
+      background-color: #ff4444;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .product-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .dark .product-card:hover {
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    
+    .category-card {
+      transition: transform 0.3s ease;
+    }
+    
+    .category-card:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Cart Slide In */
+    .cart-sidebar {
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .cart-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    .cart-sidebar.closed {
+      transform: translateX(100%);
+    }
+    
+    /* Mobile Menu Animations */
+    .mobile-menu {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    .mobile-menu.open {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .mobile-menu.closed {
+      opacity: 0;
+      transform: translateY(-20px);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="font-sans bg-white dark:bg-darkBg text-gray-800 dark:text-gray-200 transition-colors duration-200">
+  <!-- Top Announcement Banner -->
+  <div class="bg-primary text-white py-2 px-4 text-center text-sm">
+    Free delivery on all orders over 50,000 RWF in Kigali! <span class="hidden sm:inline">| 30 days money-back guarantee</span>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white dark:bg-darkBg shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex justify-between items-center">
+        <!-- Logo and Navigation -->
+        <div class="flex items-center space-x-8">
+          <a href="#" class="text-2xl font-bold text-primary">PAUL GOLDEN MARKET</a>
+          
+          <!-- Desktop Navigation -->
+          <nav class="hidden md:flex space-x-6">
+            <a href="#" class="nav-link font-medium hover:text-primary dark:hover:text-primaryLight transition-colors">Home</a>
+            <a href="#products" class="nav-link font-medium hover:text-primary dark:hover:text-primaryLight transition-colors">Products</a>
+            <a href="#categories" class="nav-link font-medium hover:text-primary dark:hover:text-primaryLight transition-colors">Categories</a>
+            <a href="#suggestion" class="nav-link font-medium hover:text-primary dark:hover:text-primaryLight transition-colors">Contact Us</a>
+          </nav>
+        </div>
+        
+        <!-- Header Right - Search, Dark Mode, Cart -->
+        <div class="flex items-center space-x-4">
+          <!-- Search Button -->
+          <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-darkCard transition-colors" id="searchToggle">
+            <i class="fas fa-search text-gray-600 dark:text-gray-300"></i>
+          </button>
+          
+          <!-- Dark Mode Toggle -->
+          <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-darkCard transition-colors" id="darkModeToggle">
+            <i class="fas fa-moon text-gray-600 dark:text-gray-300 dark:hidden"></i>
+            <i class="fas fa-sun text-gray-300 hidden dark:block"></i>
+          </button>
+          
+          <!-- Cart Button -->
+          <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-darkCard transition-colors relative" id="cartToggle">
+            <i class="fas fa-shopping-cart text-gray-600 dark:text-gray-300"></i>
+            <span class="cart-badge" id="cartCount">0</span>
+          </button>
+          
+          <!-- Mobile Menu Toggle -->
+          <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-darkCard transition-colors md:hidden" id="mobileMenuToggle">
+            <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Search Bar (Hidden by default) -->
+      <div class="mt-3 hidden" id="searchBar">
+        <div class="relative">
+          <input type="text" placeholder="Search products..." class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-darkCard text-base">
+          <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu (Hidden by default) -->
+      <nav class="mobile-menu closed mt-3 md:hidden bg-white dark:bg-darkCard rounded-lg shadow-lg p-4" id="mobileMenu">
+        <div class="flex flex-col space-y-3">
+          <a href="#" class="py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">Home</a>
+          <a href="#products" class="py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">Products</a>
+          <a href="#categories" class="py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">Categories</a>
+          <a href="#suggestion" class="py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">Contact Us</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar closed fixed right-0 top-0 h-full w-full sm:w-96 bg-white dark:bg-darkCard shadow-lg z-50 p-4 overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold">Your Cart</h2>
+      <button id="closeCart" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div id="cartItems" class="space-y-4">
+      <!-- Cart items will be inserted here by JavaScript -->
+    </div>
+    
+    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex justify-between mb-2">
+        <span>Subtotal:</span>
+        <span id="cartSubtotal">0 RWF</span>
+      </div>
+      <div class="flex justify-between mb-6">
+        <span>Shipping:</span>
+        <span id="cartShipping">2,500 RWF</span>
+      </div>
+      <div class="flex justify-between text-lg font-bold">
+        <span>Total:</span>
+        <span id="cartTotal">2,500 RWF</span>
+      </div>
+      
+      <button class="w-full bg-primary hover:bg-primaryDark text-white py-3 rounded-lg mt-4 transition-colors">
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+  
+  <!-- Hero Section -->
+  <section class="relative bg-primary text-white">
+    <div class="container mx-auto px-4 py-16 md:py-24">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div class="space-y-6">
+          <h1 class="text-4xl md:text-5xl font-bold leading-tight">Your One-Stop Electronics Shop in Kigali</h1>
+          <p class="text-lg md:text-xl opacity-90">Discover the latest technology and accessories at unbeatable prices.</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#products" class="px-6 py-3 bg-white text-primary font-medium rounded-lg hover:bg-gray-100 transition-colors">
+              Shop Now
+            </a>
+            <a href="#categories" class="px-6 py-3 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors">
+              View Categories
+            </a>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl"></div>
+            <div class="bg-white/10 p-8 rounded-2xl shadow-lg backdrop-blur-sm">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/20 p-4 rounded-xl">
+                  <i class="fas fa-mobile-alt text-3xl mb-2"></i>
+                  <h3 class="font-medium">Phones</h3>
+                </div>
+                <div class="bg-white/20 p-4 rounded-xl">
+                  <i class="fas fa-laptop text-3xl mb-2"></i>
+                  <h3 class="font-medium">Laptops</h3>
+                </div>
+                <div class="bg-white/20 p-4 rounded-xl">
+                  <i class="fas fa-headphones text-3xl mb-2"></i>
+                  <h3 class="font-medium">Accessories</h3>
+                </div>
+                <div class="bg-white/20 p-4 rounded-xl">
+                  <i class="fas fa-tv text-3xl mb-2"></i>
+                  <h3 class="font-medium">TVs</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Wave Divider -->
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="fill-white dark:fill-darkBg h-8 md:h-16 w-full">
+        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+      </svg>
+    </div>
+  </section>
+  
+  <!-- Featured Products Section -->
+  <section class="py-16" id="products">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Featured Products</h2>
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Discover our selection of top-selling electronics and accessories. All products come with a 30-day money-back guarantee.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Product Cards -->
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1663499482721-57358e17a557" alt="iPhone 14 Pro" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">iPhone 14 Pro</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Phones</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Latest Apple iPhone with advanced camera system and A16 Bionic chip.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">999,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="1">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1678911820864-e5a2eb155876" alt="Samsung Galaxy S23" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">Samsung Galaxy S23</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Phones</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Flagship Android phone with powerful camera and Snapdragon processor.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">899,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="2">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="MacBook Pro 14" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">MacBook Pro 14"</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Computers</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Apple's professional laptop with M2 Pro chip and Liquid Retina XDR display.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">1,599,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="3">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6" alt="Dell XPS 15" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">Dell XPS 15</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Computers</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Premium Windows laptop with 12th Gen Intel Core processor and OLED display.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">1,299,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="4">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b" alt="Sony WH-1000XM5" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">Sony WH-1000XM5</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Accessories</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Industry-leading noise cancelling headphones with exceptional sound quality.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">280,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="5">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0" alt="iPad Air" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">iPad Air</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Computers</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Versatile tablet powered by the Apple M1 chip with 10.9-inch Liquid Retina display.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">599,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="6">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1593784991095-a205069470b6" alt="Samsung 65" QLED TV" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">Samsung 65" QLED TV</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">TVs & Audio</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">4K Smart TV with Quantum Dot technology for vibrant colors and deep blacks.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">1,200,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="7">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1629429407756-446d00a9ff2d" alt="Logitech MX Master 3S" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="font-medium">Logitech MX Master 3S</h3>
+              <span class="text-sm py-1 px-2 bg-primary/10 text-primary rounded-full">Accessories</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Advanced wireless mouse with ultra-fast scrolling and precise tracking.</p>
+            <div class="flex justify-between items-center">
+              <span class="font-bold">99,000 RWF</span>
+              <button class="add-to-cart px-3 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors" data-id="8">
+                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Categories Section -->
+  <section class="py-16 bg-gray-100 dark:bg-darkCard/50" id="categories">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Shop by Category</h2>
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Browse our products by category to find exactly what you're looking for.</p>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div class="category-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-32 bg-primary/10 flex items-center justify-center">
+            <i class="fas fa-mobile-alt text-4xl text-primary"></i>
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-medium">Phones</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Smartphones & accessories</p>
+          </div>
+        </div>
+        
+        <div class="category-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-32 bg-primary/10 flex items-center justify-center">
+            <i class="fas fa-laptop text-4xl text-primary"></i>
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-medium">Computers</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Laptops, desktops & parts</p>
+          </div>
+        </div>
+        
+        <div class="category-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-32 bg-primary/10 flex items-center justify-center">
+            <i class="fas fa-headphones text-4xl text-primary"></i>
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-medium">Accessories</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Headphones, chargers & more</p>
+          </div>
+        </div>
+        
+        <div class="category-card bg-white dark:bg-darkCard rounded-xl shadow-md overflow-hidden">
+          <div class="h-32 bg-primary/10 flex items-center justify-center">
+            <i class="fas fa-tv text-4xl text-primary"></i>
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-medium">TVs & Audio</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Smart TVs, speakers & more</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- About Section -->
+  <section class="py-16">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-3xl font-bold mb-4">About PAUL GOLDEN MARKET</h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-4">PAUL GOLDEN MARKET is Kigali's premier electronics retailer, offering a wide range of high-quality devices and accessories at competitive prices.</p>
+          <p class="text-gray-600 dark:text-gray-400 mb-6">Founded with a mission to make modern technology accessible to everyone in Rwanda, we pride ourselves on excellent customer service and product expertise.</p>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-100 dark:bg-darkCard p-4 rounded-lg">
+              <div class="text-primary text-xl font-bold">3+</div>
+              <div class="text-gray-600 dark:text-gray-400">Years Experience</div>
+            </div>
+            <div class="bg-gray-100 dark:bg-darkCard p-4 rounded-lg">
+              <div class="text-primary text-xl font-bold">500+</div>
+              <div class="text-gray-600 dark:text-gray-400">Happy Customers</div>
+            </div>
+            <div class="bg-gray-100 dark:bg-darkCard p-4 rounded-lg">
+              <div class="text-primary text-xl font-bold">1000+</div>
+              <div class="text-gray-600 dark:text-gray-400">Products</div>
+            </div>
+            <div class="bg-gray-100 dark:bg-darkCard p-4 rounded-lg">
+              <div class="text-primary text-xl font-bold">24/7</div>
+              <div class="text-gray-600 dark:text-gray-400">Customer Support</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-100 dark:bg-darkCard p-6 rounded-xl">
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mr-4">
+                <i class="fas fa-truck"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Fast Delivery</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Same-day delivery in Kigali</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mr-4">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Product Warranty</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Minimum 1-year warranty on all products</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mr-4">
+                <i class="fas fa-undo"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Easy Returns</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">30-day money-back guarantee</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mr-4">
+                <i class="fas fa-headset"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">24/7 Support</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Customer service available all the time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Suggestion Form -->
+  <section class="py-16 bg-gray-100 dark:bg-darkCard/50" id="suggestion">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold mb-4">We Value Your Feedback</h2>
+          <p class="text-gray-600 dark:text-gray-400">Have a suggestion or feedback? Let us know and help us improve our products and services.</p>
+        </div>
+        
+        <form id="suggestionForm" class="bg-white dark:bg-darkCard p-6 rounded-xl shadow-md">
+          <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="name" class="block mb-2 text-sm font-medium">Your Name</label>
+              <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-base" required>
+            </div>
+            <div>
+              <label for="email" class="block mb-2 text-sm font-medium">Email Address</label>
+              <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-base" required>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="subject" class="block mb-2 text-sm font-medium">Subject</label>
+            <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-base" required>
+          </div>
+          
+          <div class="mb-6">
+            <label for="message" class="block mb-2 text-sm font-medium">Your Message</label>
+            <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-base resize-none" required></textarea>
+          </div>
+          
+          <button type="submit" class="w-full md:w-auto px-6 py-3 bg-primary hover:bg-primaryDark text-white font-medium rounded-lg transition-colors">
+            Submit Feedback
+          </button>
+        </form>
+        
+        <div id="formSuccess" class="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+          Thank you for your feedback! We'll get back to you soon.
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">PAUL GOLDEN MARKET</h3>
+          <p class="text-gray-400 mb-4">Your trusted electronics store in Kigali, Rwanda.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-medium mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">Products</a></li>
+            <li><a href="#categories" class="text-gray-400 hover:text-white transition-colors">Categories</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#suggestion" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-medium mb-4">Categories</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Phones</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Computers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accessories</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">TVs & Audio</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cameras</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-medium mb-4">Contact Information</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+              <span>KK 15 Ave, Kigali, Rwanda</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-phone-alt mt-1 mr-3"></i>
+              <span>+250 789375181</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-envelope mt-1 mr-3"></i>
+              <span>Johnpaulpeter43@gmail.com</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-clock mt-1 mr-3"></i>
+              <span>Mon-Sat: 8:00 AM - 8:00 PM</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+        <p>&copy; 2025 PAUL GOLDEN MARKET. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Product data (simulating a database)
+    const products = [
+      {
+        id: 1,
+        name: "iPhone 14 Pro",
+        category: "Phones",
+        price: 999000,
+        image: "https://images.unsplash.com/photo-1663499482721-57358e17a557",
+        description: "Latest Apple iPhone with advanced camera system and A16 Bionic chip."
+      },
+      {
+        id: 2,
+        name: "Samsung Galaxy S23",
+        category: "Phones",
+        price: 899000,
+        image: "https://images.unsplash.com/photo-1678911820864-e5a2eb155876",
+        description: "Flagship Android phone with powerful camera and Snapdragon processor."
+      },
+      {
+        id: 3,
+        name: "MacBook Pro 14\"",
+        category: "Computers",
+        price: 1599000,
+        image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8",
+        description: "Apple's professional laptop with M2 Pro chip and Liquid Retina XDR display."
+      },
+      {
+        id: 4,
+        name: "Dell XPS 15",
+        category: "Computers",
+        price: 1299000,
+        image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6",
+        description: "Premium Windows laptop with 12th Gen Intel Core processor and OLED display."
+      },
+      {
+        id: 5,
+        name: "Sony WH-1000XM5",
+        category: "Accessories",
+        price: 280000,
+        image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b",
+        description: "Industry-leading noise cancelling headphones with exceptional sound quality."
+      },
+      {
+        id: 6,
+        name: "iPad Air",
+        category: "Computers",
+        price: 599000,
+        image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0",
+        description: "Versatile tablet powered by the Apple M1 chip with 10.9-inch Liquid Retina display."
+      },
+      {
+        id: 7,
+        name: "Samsung 65\" QLED TV",
+        category: "TVs & Audio",
+        price: 1200000,
+        image: "https://images.unsplash.com/photo-1593784991095-a205069470b6",
+        description: "4K Smart TV with Quantum Dot technology for vibrant colors and deep blacks."
+      },
+      {
+        id: 8,
+        name: "Logitech MX Master 3S",
+        category: "Accessories",
+        price: 99000,
+        image: "https://images.unsplash.com/photo-1629429407756-446d00a9ff2d",
+        description: "Advanced wireless mouse with ultra-fast scrolling and precise tracking."
+      }
+    ];
+    
+    // Format price function
+    function formatPrice(price) {
+      return new Intl.NumberFormat('fr-RW', { style: 'decimal' }).format(price) + " RWF";
+    }
+    
+    // Initialize cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('jazzo_cart')) || [];
+    
+    // DOM elements
+    const productsContainer = document.querySelector('#products .grid');
+    const cartItemsContainer = document.getElementById('cartItems');
+    const cartCount = document.getElementById('cartCount');
+    const cartSubtotal = document.getElementById('cartSubtotal');
+    const cartShipping = document.getElementById('cartShipping');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartSidebar = document.querySelector('.cart-sidebar');
+    const cartToggle = document.getElementById('cartToggle');
+    const closeCart = document.getElementById('closeCart');
+    const searchToggle = document.getElementById('searchToggle');
+    const searchBar = document.getElementById('searchBar');
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const suggestionForm = document.getElementById('suggestionForm');
+    const formSuccess = document.getElementById('formSuccess');
+    
+    // Handle dark mode
+    function setupDarkMode() {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      }
+      
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (event.matches) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      });
+      
+      darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+    }
+    
+    // No need to dynamically generate products - they're already in the HTML
+    function setupProductListeners() {
+      // Add event listeners to all "Add to Cart" buttons
+      document.querySelectorAll('.add-to-cart').forEach(button => {
+        const productId = parseInt(button.getAttribute('data-id'));
+        button.addEventListener('click', () => addToCart(productId));
+      });
+    }
+    
+    // Add product to cart
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      
+      if (!product) return;
+      
+      // Check if product already in cart
+      const existingItem = cart.find(item => item.id === productId);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          quantity: 1
+        });
+      }
+      
+      // Save cart to localStorage
+      localStorage.setItem('jazzo_cart', JSON.stringify(cart));
+      
+      // Update cart UI
+      updateCartUI();
+      
+      // Show notification
+      showNotification(`${product.name} added to cart!`);
+      
+      // Open cart sidebar
+      openCart();
+    }
+    
+    // Remove product from cart
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      
+      // Save cart to localStorage
+      localStorage.setItem('jazzo_cart', JSON.stringify(cart));
+      
+      // Update cart UI
+      updateCartUI();
+    }
+    
+    // Update quantity of product in cart
+    function updateQuantity(productId, newQuantity) {
+      const item = cart.find(item => item.id === productId);
+      
+      if (!item) return;
+      
+      if (newQuantity < 1) {
+        removeFromCart(productId);
+        return;
+      }
+      
+      item.quantity = newQuantity;
+      
+      // Save cart to localStorage
+      localStorage.setItem('jazzo_cart', JSON.stringify(cart));
+      
+      // Update cart UI
+      updateCartUI();
+    }
+    
+    // Update cart UI
+    function updateCartUI() {
+      // Update cart count
+      const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+      cartCount.textContent = totalItems;
+      
+      // Update cart items
+      cartItemsContainer.innerHTML = '';
+      
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="text-center py-8">
+            <i class="fas fa-shopping-cart text-3xl text-gray-300 dark:text-gray-600 mb-3"></i>
+            <p class="text-gray-500 dark:text-gray-400">Your cart is empty</p>
+          </div>
+        `;
+      } else {
+        cart.forEach(item => {
+          const cartItem = document.createElement('div');
+          cartItem.className = 'flex border-b border-gray-200 dark:border-gray-700 pb-4';
+          
+          cartItem.innerHTML = `
+            <div class="w-20 h-20 rounded-lg overflow-hidden mr-3">
+              <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+              <h4 class="font-medium mb-1">${item.name}</h4>
+              <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">${formatPrice(item.price)}</div>
+              <div class="flex items-center">
+                <button class="decrease-quantity w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-l-md" data-id="${item.id}">
+                  <i class="fas fa-minus text-xs"></i>
+                </button>
+                <span class="item-quantity w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-800 text-sm">${item.quantity}</span>
+                <button class="increase-quantity w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-r-md" data-id="${item.id}">
+                  <i class="fas fa-plus text-xs"></i>
+                </button>
+                <button class="remove-item ml-auto text-red-500 hover:text-red-700" data-id="${item.id}">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          
+          cartItemsContainer.appendChild(cartItem);
+          
+          // Add event listeners
+          const decreaseBtn = cartItem.querySelector('.decrease-quantity');
+          const increaseBtn = cartItem.querySelector('.increase-quantity');
+          const removeBtn = cartItem.querySelector('.remove-item');
+          
+          decreaseBtn.addEventListener('click', () => updateQuantity(item.id, item.quantity - 1));
+          increaseBtn.addEventListener('click', () => updateQuantity(item.id, item.quantity + 1));
+          removeBtn.addEventListener('click', () => removeFromCart(item.id));
+        });
+      }
+      
+      // Update subtotal, shipping, and total
+      const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+      const shipping = cart.length > 0 ? 2500 : 0;
+      const total = subtotal + shipping;
+      
+      cartSubtotal.textContent = formatPrice(subtotal);
+      cartShipping.textContent = formatPrice(shipping);
+      cartTotal.textContent = formatPrice(total);
+    }
+    
+    // Open cart sidebar
+    function openCart() {
+      cartSidebar.classList.remove('closed');
+      cartSidebar.classList.add('open');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+    
+    // Close cart sidebar
+    function closeCart() {
+      cartSidebar.classList.remove('open');
+      cartSidebar.classList.add('closed');
+      document.body.style.overflow = 'auto'; // Allow scrolling
+    }
+    
+    // Toggle search bar
+    function toggleSearch() {
+      searchBar.classList.toggle('hidden');
+    }
+    
+    // Toggle mobile menu
+    function toggleMobileMenu() {
+      mobileMenu.classList.toggle('closed');
+      mobileMenu.classList.toggle('open');
+    }
+    
+    // Show notification
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed bottom-4 right-4 bg-primary text-white py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-full';
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // Show notification
+      setTimeout(() => {
+        notification.classList.remove('translate-y-full');
+      }, 10);
+      
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        notification.classList.add('translate-y-full');
+        
+        // Remove notification after animation
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 3000);
+    }
+    
+    // Handle suggestion form submission
+    function handleFormSubmission(e) {
+      e.preventDefault();
+      
+      // Get form values
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      
+      // Simulate form submission (in a real app, this would send data to a server)
+      console.log('Form submission:', { name, email, subject, message });
+      
+      // Reset form
+      suggestionForm.reset();
+      
+      // Show success message
+      formSuccess.classList.remove('hidden');
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        formSuccess.classList.add('hidden');
+      }, 5000);
+    }
+    
+    // Initialize the app
+    function init() {
+      setupDarkMode();
+      setupProductListeners();
+      updateCartUI();
+      
+      // Add event listeners
+      cartToggle.addEventListener('click', openCart);
+      closeCart.addEventListener('click', closeCart);
+      searchToggle.addEventListener('click', toggleSearch);
+      mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+      suggestionForm.addEventListener('submit', handleFormSubmission);
+      
+      // Close cart when clicking outside
+      document.addEventListener('click', e => {
+        if (
+          cartSidebar.classList.contains('open') && 
+          !cartSidebar.contains(e.target) && 
+          e.target !== cartToggle && 
+          !cartToggle.contains(e.target)
+        ) {
+          closeCart();
+        }
+      });
+    }
+    
+    // Run the app
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
