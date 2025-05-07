@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - PAUL GOLDEN MARKET</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#7877e6',
+                        dark: {
+                            bg: '#181818',
+                            text: '#f3f4f6'
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check for dark mode preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    <style>
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .category-pill.active {
+            background-color: #5D5CDE;
+            color: white;
+        }
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+        .cart-drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+        .cart-drawer.closed {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <header class="bg-white dark:bg-gray-900 shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-primary text-2xl font-bold">PAUL GOLDEN MARKET</a>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="font-medium hover:text-primary">Home</a>
+                    <a href="products.html" class="font-medium text-primary">Products</a>
+                    <a href="#" class="font-medium hover:text-primary">Categories</a>
+                    <a href="#" class="font-medium hover:text-primary">Contact Us</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button id="cart-button" class="relative">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cart-count" class="cart-badge bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button class="md:hidden" id="menu-toggle">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="md:hidden hidden py-4">
+                <a href="index.html" class="block py-2 hover:text-primary">Home</a>
+                <a href="products.html" class="block py-2 text-primary">Products</a>
+                <a href="#" class="block py-2 hover:text-primary">Categories</a>
+                <a href="#" class="block py-2 hover:text-primary">Contact Us</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Products Section -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">All Products</h1>
+        
+        <!-- Search and Filter -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div class="relative w-full md:w-80">
+                <input type="text" id="search-input" placeholder="Search products..." 
+                    class="w-full rounded-lg border-gray-300 border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-base dark:bg-gray-800 dark:border-gray-700">
+                <button class="absolute right-3 top-2">
+                    <i class="fas fa-search text-gray-400"></i>
+                </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                <button class="category-pill active px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium" data-category="all">All</button>
+                <button class="category-pill px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium" data-category="watches">Watches</button>
+                <button class="category-pill px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium" data-category="computers">Computers</button>
+                <button class="category-pill px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium" data-category="accessories">Accessories</button>
+                <button class="category-pill px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium" data-category="tvs">TVs & Audio</button>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products will be dynamically added here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 dark:bg-gray-900 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">PAUL GOLDEN MARKET</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Your trusted electronics store in Kigali, Rwanda.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">Home</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">Products</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">Categories</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact Information</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">KK 15 Ave, Kigali, Rwanda</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">+250 789375181</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Johnpaulpeter43@gmail.com</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Mon-Sat: 8:00 AM - 8:00 PM</p>
+                </div>
+            </div>
+            <div class="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <p class="text-sm text-gray-600 dark:text-gray-400">© 2025 PAUL GOLDEN MARKET. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/250789375181" class="whatsapp-button w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 transition-colors">
+        <i class="fab fa-whatsapp text-white text-2xl"></i>
+    </a>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="cart-drawer closed fixed top-0 right-0 h-full w-full sm:w-96 bg-white dark:bg-gray-900 shadow-lg z-50">
+        <div class="p-4 h-full flex flex-col">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h2 class="text-xl font-bold">Your Cart</h2>
+                <button id="close-cart">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-grow overflow-auto">
+                <!-- Cart items will be added here -->
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400" id="empty-cart-message">
+                    <i class="fas fa-shopping-cart text-4xl mb-3"></i>
+                    <p>Your cart is empty</p>
+                </div>
+            </div>
+            <div class="border-t pt-4 mt-auto">
+                <div class="flex justify-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">0 RWF</span>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <span>Shipping:</span>
+                    <span id="cart-shipping">1,500 RWF</span>
+                </div>
+                <div class="flex justify-between font-bold mb-6">
+                    <span>Total:</span>
+                    <span id="cart-total">1,500 RWF</span>
+                </div>
+                <button class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-secondary transition-colors">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Products data
+        const products = [
+            {
+                id: 1,
+                name: "GT08 Smartwatch",
+                category: "watches",
+                price: 15000,
+                image: generateProductImage("GT08 Smartwatch", "#3f51b5"),
+                description: "Track fitness, receive calls and messages."
+            },
+            {
+                id: 2,
+                name: "Smartwatch ID116 Plus",
+                category: "watches",
+                price: 9000,
+                image: generateProductImage("ID116 Plus", "#00bcd4"),
+                description: "Immersive sound with deep bass."
+            },
+            {
+                id: 3,
+                name: "Sony WH-1000XM5",
+                category: "accessories",
+                price: 10000,
+                image: generateProductImage("Sony WH-1000XM5", "#616161"),
+                description: "Industry-leading noise cancelling headphones."
+            },
+            {
+                id: 4,
+                name: "iPad Air",
+                category: "computers",
+                price: 10000,
+                image: generateProductImage("iPad Air", "#f5f5f5"),
+                description: "Versatile tablet powered by the Apple M1 chip."
+            },
+            {
+                id: 5,
+                name: "Samsung 65\" QLED TV",
+                category: "tvs",
+                price: 156000,
+                image: generateProductImage("Samsung TV", "#263238"),
+                description: "4K Smart TV with Quantum Dot technology."
+            },
+            {
+                id: 6,
+                name: "Advanced Wireless Mouse",
+                category: "accessories",
+                price: 7000,
+                image: generateProductImage("Wireless Mouse", "#212121"),
+                description: "Ultra-fast scrolling and precise tracking."
+            },
+            {
+                id: 7,
+                name: "AirPods Pro",
+                category: "accessories",
+                price: 10000,
+                image: generateProductImage("AirPods Pro", "#f5f5f5"),
+                description: "Advanced camera system and A16 Bionic chip."
+            },
+            {
+                id: 8,
+                name: "Women Quartz Watch Set",
+                category: "watches",
+                price: 15000,
+                image: generateProductImage("Quartz Watch", "#ff4081"),
+                description: "6pcs butterfly design for elegant style."
+            },
+            {
+                id: 9,
+                name: "Bluetooth Speaker",
+                category: "tvs",
+                price: 8500,
+                image: generateProductImage("BT Speaker", "#ff9800"),
+                description: "Portable speaker with excellent bass response."
+            },
+            {
+                id: 10,
+                name: "MacBook Air",
+                category: "computers",
+                price: 120000,
+                image: generateProductImage("MacBook Air", "#e0e0e0"),
+                description: "Lightweight laptop with all-day battery life."
+            },
+            {
+                id: 11,
+                name: "Gaming Headset",
+                category: "accessories",
+                price: 12000,
+                image: generateProductImage("Headset", "#673ab7"),
+                description: "Surround sound with noise-cancelling microphone."
+            },
+            {
+                id: 12,
+                name: "Smart LED Bulb",
+                category: "accessories",
+                price: 3500,
+                image: generateProductImage("LED Bulb", "#ffc107"),
+                description: "Control lighting from your smartphone."
+            }
+        ];
+
+        // Cart functionality
+        let cart = [];
+        const cartCount = document.getElementById("cart-count");
+        const cartButton = document.getElementById("cart-button");
+        const cartDrawer = document.getElementById("cart-drawer");
+        const closeCart = document.getElementById("close-cart");
+        const cartItems = document.getElementById("cart-items");
+        const emptyCartMessage = document.getElementById("empty-cart-message");
+        const cartSubtotal = document.getElementById("cart-subtotal");
+        const cartShipping = document.getElementById("cart-shipping");
+        const cartTotal = document.getElementById("cart-total");
+
+        // Add product to cart
+        function addToCart(product) {
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({...product, quantity: 1});
+            }
+            
+            updateCart();
+            openCart();
+        }
+
+        // Remove product from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        // Update cart quantity
+        function updateCartItemQuantity(productId, quantity) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity = parseInt(quantity);
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCart();
+                }
+            }
+        }
+
+        // Update cart UI
+        function updateCart() {
+            // Update cart count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Update cart items
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.appendChild(emptyCartMessage);
+            } else {
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'flex mb-4 pb-4 border-b';
+                    cartItem.innerHTML = `
+                        <div class="w-20 h-20 flex-shrink-0 bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="ml-4 flex-grow">
+                            <div class="flex justify-between">
+                                <h3 class="font-medium">${item.name}</h3>
+                                <button class="text-gray-400 hover:text-red-500" onclick="removeFromCart(${item.id})">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            <p class="text-primary font-medium">${item.price.toLocaleString()} RWF</p>
+                            <div class="flex mt-2 items-center">
+                                <button class="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded-l flex items-center justify-center" 
+                                    onclick="updateCartItemQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                                <input type="number" min="1" value="${item.quantity}" 
+                                    class="w-10 h-6 text-center border-0 bg-gray-100 dark:bg-gray-700 text-sm"
+                                    onchange="updateCartItemQuantity(${item.id}, this.value)">
+                                <button class="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded-r flex items-center justify-center"
+                                    onclick="updateCartItemQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                            </div>
+                        </div>
+                    `;
+                    cartItems.appendChild(cartItem);
+                });
+            }
+            
+            // Update cart totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 50000 || subtotal === 0 ? 0 : 1500;
+            const total = subtotal + shipping;
+            
+            cartSubtotal.textContent = subtotal.toLocaleString() + ' RWF';
+            cartShipping.textContent = shipping.toLocaleString() + ' RWF' + (subtotal > 50000 && subtotal !== 0 ? ' (Free)' : '');
+            cartTotal.textContent = total.toLocaleString() + ' RWF';
+        }
+
+        // Open cart drawer
+        function openCart() {
+            cartDrawer.classList.remove('closed');
+            cartDrawer.classList.add('open');
+        }
+
+        // Close cart drawer
+        function closeCartDrawer() {
+            cartDrawer.classList.remove('open');
+            cartDrawer.classList.add('closed');
+        }
+
+        // Category filter
+        let currentCategory = 'all';
+        const categoryPills = document.querySelectorAll('.category-pill');
+        
+        categoryPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                categoryPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentCategory = pill.dataset.category;
+                filterProducts();
+            });
+        });
+
+        // Search filter
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', filterProducts);
+
+        function filterProducts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const productsToDisplay = products.filter(product => {
+                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
+                                      product.description.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+            
+            renderProducts(productsToDisplay);
+        }
+
+        // Render products
+        function renderProducts(productsToShow) {
+            const productsGrid = document.getElementById('products-grid');
+            productsGrid.innerHTML = '';
+            
+            productsToShow.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md';
+                productCard.innerHTML = `
+                    <div class="h-48 overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">${getCategoryName(product.category)}</div>
+                        <h3 class="font-medium text-lg mb-2">${product.name}</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">${product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold">${product.price.toLocaleString()} RWF</span>
+                            <button class="add-to-cart bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+
+            if (productsToShow.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <i class="fas fa-search text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                        <h3 class="text-xl font-medium">No products found</h3>
+                        <p class="text-gray-500 dark:text-gray-400 mt-2">Try adjusting your search or filter to find what you're looking for.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Generate product image (as data URL)
+        function generateProductImage(name, bgColor) {
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = bgColor || '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add product name
+            ctx.fillStyle = getContrastColor(bgColor || '#f0f0f0');
+            ctx.font = 'bold 30px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Handle long names
+            const words = name.split(' ');
+            if (words.length > 1) {
+                ctx.fillText(words[0], canvas.width/2, canvas.height/2 - 20);
+                ctx.fillText(words.slice(1).join(' '), canvas.width/2, canvas.height/2 + 20);
+            } else {
+                ctx.fillText(name, canvas.width/2, canvas.height/2);
+            }
+            
+            return canvas.toDataURL('image/png');
+        }
+
+        // Get contrast color (black or white) based on background
+        function getContrastColor(hexColor) {
+            // Convert hex to RGB
+            hexColor = hexColor.replace('#', '');
+            const r = parseInt(hexColor.substr(0, 2), 16);
+            const g = parseInt(hexColor.substr(2, 2), 16);
+            const b = parseInt(hexColor.substr(4, 2), 16);
+            
+            // Calculate brightness (YIQ formula)
+            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            
+            return (yiq >= 128) ? '#000000' : '#ffffff';
+        }
+
+        // Get category name for display
+        function getCategoryName(category) {
+            const categories = {
+                'watches': 'Watches',
+                'computers': 'Computers',
+                'accessories': 'Accessories',
+                'tvs': 'TVs & Audio'
+            };
+            return categories[category] || category;
+        }
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Cart event listeners
+        cartButton.addEventListener('click', openCart);
+        closeCart.addEventListener('click', closeCartDrawer);
+
+        // Initialize
+        renderProducts(products);
+        updateCart();
+    </script>
+</body>
+</html>
